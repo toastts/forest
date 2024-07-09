@@ -8,10 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      colors: {
+        oliveGrey: '#3B3C36', // Adjust this hex value to match the color in your screenshot
+        cream: '#fff9ed',
       },
     },
   },
