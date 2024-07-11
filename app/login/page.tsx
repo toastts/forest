@@ -10,6 +10,7 @@ export default function LoginPage() {
     setEmail(e.target.value);
   };
 
+  // for now we're just skipping actually setting this up
   const handleEmailSubmit = (e) => {
     e.preventDefault();
     router.push('/setup');

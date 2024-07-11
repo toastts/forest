@@ -35,4 +35,3 @@ const ScrapbookLetter: React.FC<ScrapbookLetterProps> = ({ letter, fontClass }) 
 };
 
 export default ScrapbookLetter;
-

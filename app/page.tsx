@@ -13,7 +13,7 @@ const renderPhrase = (phrase: string) => {
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cream text-white">
+    <div className="min-h-screen flex items-center justify-center bg-[#fff9ed] text-white">
       <div className="flex flex-col items-center justify-center">
         <h1 className="text-6xl">
           <div className="flex">
