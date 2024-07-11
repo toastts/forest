@@ -7,7 +7,7 @@ import FormQuestion from '@/components/FormQuestion';
 import { Button } from '@/components/ui/button';
 
 export default function SetupPage() {
-  const [answers, setAnswers] = useState<Array<{ Q: string, A: string }>>([]);
+  const [answers, setAnswers] = useState<{ [key: number]: string }>({});
   const router = useRouter();
 
   const questions = [
@@ -34,16 +34,14 @@ export default function SetupPage() {
   ];
 
   const handleAnswerSelect = (questionIndex: number, answer: string) => {
-    const newAnswers = [...answers];
-    newAnswers[questionIndex] = { Q: questions[questionIndex].question, A: answer };
-    setAnswers(newAnswers);
+    setAnswers(prev => ({ ...prev, [questionIndex]: answer }));
   };
 
   const handleInputChange = (questionIndex: number, e: React.ChangeEvent<HTMLInputElement>) => {
-    const newAnswers = [...answers];
-    newAnswers[questionIndex] = { Q: questions[questionIndex].question, A: e.target.value };
-    setAnswers(newAnswers);
+    setAnswers(prev => ({ ...prev, [questionIndex]: e.target.value }));
   };
+
+  const allQuestionsAnswered = questions.length === Object.keys(answers).length && Object.values(answers).every(answer => answer !== '');
 
   const handleContinue = () => {
     console.log('Form answers:', answers);
@@ -63,7 +61,7 @@ export default function SetupPage() {
           onInputChange={q.isFreeAnswer ? (e) => handleInputChange(index, e) : undefined}
         />
       ))}
-      {answers.length === questions.length && (
+      {allQuestionsAnswered && (
         <Button
           variant="outline"
           className="mt-6 text-branding-bright border-background-border bg-background-primary w-[600px]"
