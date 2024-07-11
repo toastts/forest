@@ -19,9 +19,21 @@ const config = {
     },
     extend: {
       colors: {
+        // ui component bg
         'background-secondary': '#282A27',
+
+        // ui borders
+        'background-border': '#2F312E',
+
+        // primary text color
         'text-primary': '#AFB5AD',
+
+
+        // app main background
         'background-primary': '#181917',
+
+        // bright branding color
+        'branding-bright': '#05FF00',
       },
       keyframes: {
         "accordion-down": {
