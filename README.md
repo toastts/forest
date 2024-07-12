@@ -1,4 +1,4 @@
-Okay so basically this is forest and basically it the org chart more digestible, and we're like building it rn
+this is forest and it makes the org chart more digestible, and we're building it rn
 
 ## Getting Started
 
