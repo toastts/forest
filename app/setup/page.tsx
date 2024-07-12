@@ -45,7 +45,8 @@ export default function SetupPage() {
 
   const handleContinue = () => {
     console.log('Form answers:', answers);
-    // router.push('/nextPage'); // Uncomment this line to navigate to the next page
+    const encodedAnswers = encodeURIComponent(JSON.stringify(answers));
+    router.push(`/onboard?state=${encodedAnswers}`);
   };
 
   return (
