@@ -1,4 +1,4 @@
-Okay so basically this is forest and it's like a thing for your meetings and employees, and we're like building it rn
+Okay so basically this is forest and basically it the org chart more digestible, and we're like building it rn
 
 ## Getting Started
 
