@@ -1,4 +1,4 @@
-this is forest and it makes the org chart more swag; we're building it rn
+this is forest and it makes your 1:1s more swag; we're building it rn
 
 ## Getting Started
 
