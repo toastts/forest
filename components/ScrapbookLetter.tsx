@@ -15,17 +15,17 @@ const randomTransform = () => {
 
 const ScrapbookLetter: React.FC<ScrapbookLetterProps> = ({ letter, fontClass }) => {
   if (letter === ' ') {
-    return <span className="inline-block p-1 m-1">{' '}</span>; // Ensure spaces are gaps
+    return <span className="inline-block p-2 m-2">{' '}</span>; // Ensure spaces are gaps
   }
 
   const textColor = '#161615'; // Flour-text color
 
   return (
     <span
-      className={`${fontClass} inline-block p-1 m-1 relative`}
+      className={`${fontClass} inline-block p-1 m-0.5 relative`}
       style={{
         color: textColor,
-        borderRadius: '5px',
+        borderRadius: '2px',
         transform: randomTransform(),
       }}
     >

@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Calendar } from '@/components/ui/calendar';
-import { Popover } from '@/components/ui/popover';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Card } from '@/components/ui/card';
 import { Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form';
 
@@ -89,12 +89,12 @@ export default function OnboardPage() {
                   control={form.control}
                   render={({ field }) => (
                     <Popover>
-                      <Popover.Trigger asChild>
+                      <PopoverTrigger asChild>
                         <Button variant="outline">{field.value ? field.value.toLocaleString() : 'Pick a date and time'}</Button>
-                      </Popover.Trigger>
-                      <Popover.Content>
+                      </PopoverTrigger>
+                      <PopoverContent>
                         <Calendar selected={field.value} onSelect={field.onChange} />
-                      </Popover.Content>
+                      </PopoverContent>
                     </Popover>
                   )}
                 />
