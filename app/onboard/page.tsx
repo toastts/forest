@@ -10,6 +10,11 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Card } from '@/components/ui/card';
 import { Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface OnboardFormValues {
   email: string;
@@ -19,12 +24,22 @@ interface OnboardFormValues {
   frequency: string;
 }
 
+const FormSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  name: z.string().min(1, { message: "Name is required" }),
+  role: z.string().min(1, { message: "Role is required" }),
+  time: z.date({ required_error: "A date and time is required." }),
+  frequency: z.string().min(1, { message: "Frequency is required" }),
+});
+
 export default function OnboardPage() {
   const searchParams = useSearchParams();
   const stateParam = searchParams.get('state');
   const initialState = stateParam ? JSON.parse(decodeURIComponent(stateParam)) : {};
   const [formData, setFormData] = useState<OnboardFormValues[]>([]);
-  const form = useForm<OnboardFormValues>();
+  const form = useForm<OnboardFormValues>({
+    resolver: zodResolver(FormSchema),
+  });
 
   const onSubmit = (data: OnboardFormValues) => {
     setFormData([...formData, data]);
@@ -39,11 +54,11 @@ export default function OnboardPage() {
         <p>Connect your Google Calendar to add them automatically or set them up one by one below.</p>
       </div>
 
-      <Card className="w-[600px]">
+      <Card className="w-[600px] bg-background-primary">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel className="text-text-primary">Email</FormLabel>
               <FormControl>
                 <Controller
                   name="email"
@@ -56,7 +71,7 @@ export default function OnboardPage() {
             </FormItem>
 
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel className="text-text-primary">Name</FormLabel>
               <FormControl>
                 <Controller
                   name="name"
@@ -69,7 +84,7 @@ export default function OnboardPage() {
             </FormItem>
 
             <FormItem>
-              <FormLabel>Role</FormLabel>
+              <FormLabel className="text-text-primary">Role</FormLabel>
               <FormControl>
                 <Controller
                   name="role"
@@ -82,29 +97,41 @@ export default function OnboardPage() {
             </FormItem>
 
             <FormItem>
-              <FormLabel>Time</FormLabel>
-              <FormControl>
-                <Controller
-                  name="time"
-                  control={form.control}
-                  render={({ field }) => (
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline">{field.value ? field.value.toLocaleString() : 'Pick a date and time'}</Button>
-                      </PopoverTrigger>
-                      <PopoverContent>
-                        <Calendar selected={field.value} onSelect={field.onChange} />
-                      </PopoverContent>
-                    </Popover>
-                  )}
-                />
-              </FormControl>
+              <FormLabel className="text-text-primary">Time</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full pl-3 text-left font-normal",
+                        !form.watch("time") && "text-muted-foreground"
+                      )}
+                    >
+                      {form.watch("time") ? (
+                        format(form.watch("time"), "PPP p")
+                      ) : (
+                        <span>Pick a date and time</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={form.watch("time") || new Date()}
+                    onSelect={(date) => form.setValue("time", date || new Date())}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
               <FormDescription>The date and time for the 1:1 meeting</FormDescription>
               <FormMessage />
             </FormItem>
 
             <FormItem>
-              <FormLabel>Meeting Frequency</FormLabel>
+              <FormLabel className="text-text-primary">Meeting Frequency</FormLabel>
               <FormControl>
                 <Controller
                   name="frequency"
