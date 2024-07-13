@@ -6,12 +6,12 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const router = useRouter();
 
-  const handleEmailChange = (e) => {
+  const handleEmailChange = (e: any) => {
     setEmail(e.target.value);
   };
 
   // for now we're just skipping actually setting this up
-  const handleEmailSubmit = (e) => {
+  const handleEmailSubmit = (e: any) => {
     e.preventDefault();
     router.push('/setup');
   };
