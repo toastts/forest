@@ -20,7 +20,7 @@ interface OnboardFormValues {
   email: string;
   name: string;
   role: string;
-  time: Date;
+  time: Date | null;
   frequency: string;
 }
 
@@ -28,23 +28,49 @@ const FormSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
   name: z.string().min(1, { message: "Name is required" }),
   role: z.string().min(1, { message: "Role is required" }),
-  time: z.date({ required_error: "A date and time is required." }),
+  time: z.date({ required_error: "A date and time is required." }).nullable(),
   frequency: z.string().min(1, { message: "Frequency is required" }),
 });
 
 export default function OnboardPage() {
   const searchParams = useSearchParams();
-  const stateParam = searchParams.get('state');
+  const stateParam = searchParams?.get('state');
   const initialState = stateParam ? JSON.parse(decodeURIComponent(stateParam)) : {};
   const [formData, setFormData] = useState<OnboardFormValues[]>([]);
   const form = useForm<OnboardFormValues>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      email: '',
+      name: '',
+      role: '',
+      time: null,
+      frequency: '',
+    },
   });
 
-  const onSubmit = (data: OnboardFormValues) => {
+  const onSubmit = async (data: OnboardFormValues) => {
     setFormData([...formData, data]);
     console.log('Form data:', data);
     console.log('All form data:', formData);
+
+    try {
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send data to API');
+      }
+
+      const result = await response.json();
+      console.log('Response from GPT:', result);
+    } catch (error: any) {
+      console.error('Error:', error.message);
+    }
   };
 
   return (
@@ -54,7 +80,7 @@ export default function OnboardPage() {
         <p>Connect your Google Calendar to add them automatically or set them up one by one below.</p>
       </div>
 
-      <Card className="w-[600px] bg-background-primary">
+      <Card className="w-[600px] bg-background-primary p-8">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormItem>
@@ -109,7 +135,7 @@ export default function OnboardPage() {
                       )}
                     >
                       {form.watch("time") ? (
-                        format(form.watch("time"), "PPP p")
+                        format(form.watch("time") as Date, "PPP p")
                       ) : (
                         <span>Pick a date and time</span>
                       )}
