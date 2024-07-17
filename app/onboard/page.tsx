@@ -10,11 +10,12 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Card } from '@/components/ui/card';
 import { Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form';
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { dummyUserOnboardData } from '@/lib/constants';
 
 interface OnboardFormValues {
   email: string;
@@ -25,11 +26,11 @@ interface OnboardFormValues {
 }
 
 const FormSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-  name: z.string().min(1, { message: "Name is required" }),
-  role: z.string().min(1, { message: "Role is required" }),
-  time: z.date({ required_error: "A date and time is required." }).nullable(),
-  frequency: z.string().min(1, { message: "Frequency is required" }),
+  email: z.string().email({ message: 'Invalid email address' }),
+  name: z.string().min(1, { message: 'Name is required' }),
+  role: z.string().min(1, { message: 'Role is required' }),
+  time: z.date({ required_error: 'A date and time is required.' }).nullable(),
+  frequency: z.string().min(1, { message: 'Frequency is required' }),
 });
 
 export default function OnboardPage() {
@@ -49,9 +50,10 @@ export default function OnboardPage() {
   });
 
   const onSubmit = async (data: OnboardFormValues) => {
-    setFormData([...formData, data]);
+    const newFormData = [...formData, data];
+    setFormData(newFormData);
     console.log('Form data:', data);
-    console.log('All form data:', formData);
+    console.log('All form data:', newFormData);
 
     try {
       const response = await fetch('/api/analyze', {
@@ -59,7 +61,7 @@ export default function OnboardPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ data }),
+        body: JSON.stringify({ dummyUserOnboardData }),
       });
 
       if (!response.ok) {
@@ -178,3 +180,4 @@ export default function OnboardPage() {
     </div>
   );
 }
+
