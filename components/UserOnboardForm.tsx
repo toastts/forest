@@ -11,23 +11,20 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Textarea } from '@/components/ui/textarea';
 
 interface OnboardFormValues {
   name: string;
   role: string;
   email: string;
-  day: string;
-  time: string;
-  frequency: string;
+  prompt: string;
 }
 
 const FormSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
   role: z.string().min(1, { message: 'Role is required' }),
   email: z.string().email({ message: 'Invalid email address' }),
-  day: z.string().min(1, { message: 'Day is required' }),
-  time: z.string().min(1, { message: 'Time is required' }),
-  frequency: z.string().min(1, { message: 'Frequency is required' }),
+  prompt: z.string().min(1, { message: 'Prompt is required' }).optional(),
 });
 
 export default function UserOnboardForm() {
@@ -38,9 +35,7 @@ export default function UserOnboardForm() {
       name: '',
       role: '',
       email: '',
-      day: '',
-      time: '',
-      frequency: '',
+      prompt: '',
     },
   });
 
@@ -93,6 +88,18 @@ export default function UserOnboardForm() {
               />
             </FormControl>
             <FormDescription>Your team member's email address</FormDescription>
+            <FormMessage />
+          </FormItem>
+          <FormItem>
+            <FormLabel className="text-text-primary">How can Forest help you improve your 1:1s?</FormLabel>
+            <FormControl>
+              <Controller
+                name="prompt"
+                control={form.control}
+                render={({ field }) => <Textarea placeholder="Enter your response" {...field} />}
+              />
+            </FormControl>
+            <FormDescription>Share your thoughts on how we can assist you</FormDescription>
             <FormMessage />
           </FormItem>
           <Button type="submit" variant="outline" className="w-full text-branding-bright border-background-border bg-background-primary">
