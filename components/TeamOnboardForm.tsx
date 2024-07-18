@@ -30,8 +30,11 @@ const FormSchema = z.object({
   frequency: z.string().min(1, { message: 'Frequency is required' }),
 });
 
-export default function UserOnboardForm() {
-  const [formData, setFormData] = useState<OnboardFormValues[]>([]);
+interface TeamOnboardFormProps {
+  onSubmit: (data: OnboardFormValues) => void;
+}
+
+export default function TeamOnboardForm({ onSubmit }: TeamOnboardFormProps) {
   const form = useForm<OnboardFormValues>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -43,13 +46,6 @@ export default function UserOnboardForm() {
       frequency: '',
     },
   });
-
-  const onSubmit = async (data: OnboardFormValues) => {
-    const newFormData = [...formData, data];
-    setFormData(newFormData);
-    console.log('Form data:', data);
-    console.log('All form data:', newFormData);
-  };
 
   return (
     <Card className="w-[600px] bg-background-primary p-8">

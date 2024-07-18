@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,8 +8,6 @@ import { Card } from '@/components/ui/card';
 import { Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Textarea } from '@/components/ui/textarea';
 
 interface OnboardFormValues {
@@ -27,8 +24,11 @@ const FormSchema = z.object({
   prompt: z.string().min(1, { message: 'Prompt is required' }).optional(),
 });
 
-export default function UserOnboardForm() {
-  const [formData, setFormData] = useState<OnboardFormValues[]>([]);
+interface UserOnboardFormProps {
+  onSubmit: (data: OnboardFormValues) => void;
+}
+
+export default function UserOnboardForm({ onSubmit }: UserOnboardFormProps) {
   const form = useForm<OnboardFormValues>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -38,13 +38,6 @@ export default function UserOnboardForm() {
       prompt: '',
     },
   });
-
-  const onSubmit = async (data: OnboardFormValues) => {
-    const newFormData = [...formData, data];
-    setFormData(newFormData);
-    console.log('Form data:', data);
-    console.log('All form data:', newFormData);
-  };
 
   return (
     <Card className="w-[600px] bg-background-primary p-8">
