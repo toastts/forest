@@ -4,7 +4,6 @@ import * as React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
 import { Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -40,7 +39,6 @@ export default function UserOnboardForm({ onSubmit }: UserOnboardFormProps) {
   });
 
   return (
-    <Card className="w-[600px] bg-background-primary p-8">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="flex space-x-4">
@@ -100,6 +98,5 @@ export default function UserOnboardForm({ onSubmit }: UserOnboardFormProps) {
           </Button>
         </form>
       </Form>
-    </Card>
   );
 }

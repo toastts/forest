@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import UserOnboardForm from '@/components/UserOnboardForm';
 import TeamOnboardForm from '@/components/TeamOnboardForm';
+import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
 interface CombinedFormValues {
   userForm: {
@@ -37,9 +38,22 @@ export default function SetupPage() {
   };
 
   return (
-    <div className="setup-page">
-      {step === 1 && <UserOnboardForm onSubmit={handleUserFormSubmit} />}
-      {step === 2 && <TeamOnboardForm onSubmit={handleTeamFormSubmit} />}
+    <div className="w-full h-full flex flex-col items-center justify-center">
+      {step == 2 && 
+      <Card className="w-[600px] bg-background-primary p-8">
+        <CardHeader>
+          <CardDescription>
+            Let's get your team and meetings set up in Forest. We're trying to let you sync your calendar but for now you have to do it manually like a loser.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    }
+      <Card className="w-[600px] bg-background-primary p-8 mt-4">
+        {step === 1 ?
+          <UserOnboardForm onSubmit={handleUserFormSubmit} />
+          :
+          <TeamOnboardForm onSubmit={handleTeamFormSubmit} />}
+      </Card>
     </div>
   );
 }
