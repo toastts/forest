@@ -146,3 +146,16 @@ body {
     transform: translateX(-75%);
   }
 }
+
+/* Added styles for layout */
+body {
+  flex-direction: row;
+}
+
+aside {
+  flex-basis: 25%;
+}
+
+main {
+  flex-basis: 50%;
+}
