@@ -5,6 +5,7 @@ import { useState } from 'react';
 import UserOnboardForm from '@/components/UserOnboardForm';
 import TeamOnboardForm from '@/components/TeamOnboardForm';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 interface CombinedFormValues {
   userForm: {
@@ -20,21 +21,36 @@ interface CombinedFormValues {
     day: string;
     time: string;
     frequency: string;
-  };
+  }[];
 }
 
 export default function SetupPage() {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState<Partial<CombinedFormValues>>({});
+  const [formData, setFormData] = useState<Partial<CombinedFormValues>>({ teamForm: [] });
 
   const handleUserFormSubmit = (data: CombinedFormValues['userForm']) => {
     setFormData((prev) => ({ ...prev, userForm: data }));
     setStep(2);
   };
 
-  const handleTeamFormSubmit = (data: CombinedFormValues['teamForm']) => {
-    setFormData((prev) => ({ ...prev, teamForm: data }));
-    console.log('Final form data:', { ...formData, teamForm: data });
+  const handleTeamFormSubmit = async () => {
+    // const response = await fetch('/api/analyze', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(formData),
+    // });
+    // const result = await response.json();
+    // console.log('API Response:', result);
+    console.log('Form Data:', formData);
+  };
+
+  const handleAddTeamMember = (data: CombinedFormValues['teamForm'][0]) => {
+    setFormData((prev) => ({
+      ...prev,
+      teamForm: [...(prev.teamForm || []), data],
+    }));
   };
 
   return (
@@ -48,12 +64,30 @@ export default function SetupPage() {
         </CardHeader>
       </Card>
     }
+    {/*DISPLAY THE CREATED TEAM MEMBERS HERE*/}
+      {formData.teamForm && formData.teamForm.map((member, index) => (
+        <Card key={index} className="w-[600px] bg-background-primary p-8 mt-4">
+          <CardHeader>
+            <CardTitle>{member.name}</CardTitle>
+            <CardDescription>{member.role}</CardDescription>
+          </CardHeader>
+          <div>Email: {member.email}</div>
+          <div>Meeting Day: {member.day}</div>
+          <div>Meeting Time: {member.time}</div>
+          <div>Meeting Frequency: {member.frequency}</div>
+        </Card>
+      ))}
       <Card className="w-[600px] bg-background-primary p-8 mt-4">
         {step === 1 ?
           <UserOnboardForm onSubmit={handleUserFormSubmit} />
           :
-          <TeamOnboardForm onSubmit={handleTeamFormSubmit} />}
+          <TeamOnboardForm onSubmit={handleTeamFormSubmit} onAddMember={handleAddTeamMember} />}
       </Card>
+      {step === 2 && formData.teamForm && formData.teamForm.length > 0 && (
+        <Button onClick={handleTeamFormSubmit} variant="outline" className="mt-4 self-end">
+          Submit
+        </Button>
+      )}
     </div>
   );
 }

@@ -31,9 +31,10 @@ const FormSchema = z.object({
 
 interface TeamOnboardFormProps {
   onSubmit: (data: OnboardFormValues) => void;
+  onAddMember: (data: OnboardFormValues) => void;
 }
 
-export default function TeamOnboardForm({ onSubmit }: TeamOnboardFormProps) {
+export default function TeamOnboardForm({ onSubmit, onAddMember }: TeamOnboardFormProps) {
   const form = useForm<OnboardFormValues>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -46,9 +47,14 @@ export default function TeamOnboardForm({ onSubmit }: TeamOnboardFormProps) {
     },
   });
 
+  const handleAddMember = (data: OnboardFormValues) => {
+    onAddMember(data);
+    form.reset();
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleAddMember)} className="space-y-4">
         <div className="flex space-x-4">
           <FormItem className="w-7/12">
             <FormLabel className="text-text-primary">Name</FormLabel>
@@ -164,7 +170,7 @@ export default function TeamOnboardForm({ onSubmit }: TeamOnboardFormProps) {
           </FormItem>
         </div>
         <Button type="submit" variant="outline" className="w-full text-branding-bright border-background-border bg-background-primary">
-          Submit
+          Add Member
         </Button>
       </form>
     </Form>
