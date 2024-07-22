@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@highlight-ai/app-runtime':
+    specifier: ^0.0.42
+    version: 0.0.42
   '@hookform/resolvers':
     specifier: ^3.9.0
     version: 3.9.0(react-hook-form@7.52.1)
@@ -488,6 +491,12 @@ packages:
     resolution: {integrity: sha512-dWO2pw8hhi+WrXq1YJy2yCuWoL20PddgGaqTgVe4cOS9Q6qklXCiA1tJEqX6BEwRNSCP84/afac9hd4MS+zEUA==}
     dev: false
 
+  /@highlight-ai/app-runtime@0.0.42:
+    resolution: {integrity: sha512-OQS6L83kTUWHRsZgo/k6JqotjNa2S7CCf4y0xnlVM17V64OrWV//4eC65zzX6A27vf2IfKWYPQbnfIy8tEgM+Q==}
+    optionalDependencies:
+      bun: 1.1.20
+    dev: false
+
   /@hookform/resolvers@3.9.0(react-hook-form@7.52.1):
     resolution: {integrity: sha512-bU0Gr4EepJ/EQsH/IwEzYLsT/PEj5C0ynLQ4m+GSHS+xKH4TfSelhluTgOaoc4kA5s7eCsQbM4wvZLzELmWzUg==}
     peerDependencies:
@@ -662,6 +671,70 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
+
+  /@oven/bun-darwin-aarch64@1.1.20:
+    resolution: {integrity: sha512-9dZuhfkol/fgG9+ZcDfDFKamp6npraPQghutE5IJM8Y3w4+y5USvw+NbANuKLSLFOH06oXMT/necZ9HT0rzTlg==}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@oven/bun-darwin-x64-baseline@1.1.20:
+    resolution: {integrity: sha512-9H0nNs0clDXtIAntN0u4++zsspCabLe2PIXfcPamw4D5qBZEVve0jd3+6pg6mTm3z2aGkUAlPtonPvlzNeWiQg==}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@oven/bun-darwin-x64@1.1.20:
+    resolution: {integrity: sha512-6IfCEMt6/exOyiAik3dbFAcP0BxDquGSq4CH9iVvd7kAI1/5X0O/iRKuFNyT9HJb16jSLISh05nZGW6KBUKXuA==}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@oven/bun-linux-aarch64@1.1.20:
+    resolution: {integrity: sha512-xR2Wf9VqFZ2IiRBv9pvQ8z/DihfIA64bGbMkLkrAhZJACk+HBJ8eLjEGI4hvr9SM9br4Jtfjlm6CmNlkpqbk3Q==}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@oven/bun-linux-x64-baseline@1.1.20:
+    resolution: {integrity: sha512-H1PIzW+Dv6VNNH/yS6we7YD2Hvig3s6zLYnEt+mQok+wJKtjzpjQT1qZly/r6mhkZqHIcM3mRAwXcxgXF7yv7Q==}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@oven/bun-linux-x64@1.1.20:
+    resolution: {integrity: sha512-8TWvnsWWWX9pZoYZ1GwZX3UwkfsnZYzicxwUdZVf/S0sNM6FBWkC9YqidxUsPva4DLKIi4oON8Ra5DpDwRZWSw==}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@oven/bun-windows-x64-baseline@1.1.20:
+    resolution: {integrity: sha512-yFm6jhL7SPfPz7sOukUeiAGmX7/S+6yj3cY8NxGGvBaZZLqNSw+vitAFg/ssV8v8oDAG7b1SqP5KzEZt3EUvKg==}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@oven/bun-windows-x64@1.1.20:
+    resolution: {integrity: sha512-1Njpp2LUq6mEyDdk3IBge7ew/+maqX/Q7ltalX7JT2Gxh693c0KuL7pzrExbkBweqSL1nMec0Crw+GkVd3bFxA==}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: false
+    optional: true
 
   /@pkgjs/parseargs@0.11.0:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -1673,6 +1746,24 @@ packages:
       base64-js: 1.5.1
       ieee754: 1.2.1
     dev: false
+
+  /bun@1.1.20:
+    resolution: {integrity: sha512-aqLmvaz0/vLUiCrOXtAsf7pCSOS/qXieYDsq8COa3+fIgMK05CjZt9m9r7DC+tjKy7hH8uKSNTapQOr/kX8gIA==}
+    cpu: [arm64, x64]
+    os: [darwin, linux, win32]
+    hasBin: true
+    requiresBuild: true
+    optionalDependencies:
+      '@oven/bun-darwin-aarch64': 1.1.20
+      '@oven/bun-darwin-x64': 1.1.20
+      '@oven/bun-darwin-x64-baseline': 1.1.20
+      '@oven/bun-linux-aarch64': 1.1.20
+      '@oven/bun-linux-x64': 1.1.20
+      '@oven/bun-linux-x64-baseline': 1.1.20
+      '@oven/bun-windows-x64': 1.1.20
+      '@oven/bun-windows-x64-baseline': 1.1.20
+    dev: false
+    optional: true
 
   /busboy@1.6.0:
     resolution: {integrity: sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA==}
