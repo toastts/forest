@@ -50,7 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             frequency: teamMember.frequency,
             userId: user.id,
           },
-        }).then((team: any) => {
+        }).then((team) => {
           return prisma.meeting.create({
             data: {
               day: teamMember.day,
