@@ -2,20 +2,29 @@ import cron from 'node-cron';
 import { sendEmail } from '@/lib/email';
 import { prisma } from '@/lib/prisma';
 
-export function scheduleEmail(meeting) {
+interface Meeting {
+  day: string;
+  time: string;
+  frequency: string;
+  team: {
+    id: number;
+  };
+}
+
+export function scheduleEmail(meeting: Meeting) {
   const { day, time, frequency, team } = meeting;
   const cronExpression = getCronExpression(day, time, frequency);
 
   cron.schedule(cronExpression, async () => {
     const teamMember = await prisma.team.findUnique({ where: { id: team.id } });
-    sendEmail(teamMember.email, 'Meeting Reminder', `You have a meeting scheduled at ${time} on ${day}`);
+    if (teamMember) {
+      sendEmail(teamMember.email, 'Meeting Reminder', `You have a meeting scheduled at ${time} on ${day}`);
+    }
   });
 }
 
-// TODO: write a handler for form meeting collection
-// FIXME: basic logic but .ts is annoying
-function getCronExpression(day, time, frequency) {
-  const daysOfWeek = {
+function getCronExpression(day: string, time: string, frequency: string): string {
+  const daysOfWeek: { [key: string]: string } = {
     Sunday: '0',
     Monday: '1',
     Tuesday: '2',

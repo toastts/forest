@@ -19,6 +19,7 @@ model User {
   role      String
   email     String
   team      Team[]
+  meetings  Meeting[]
 }
 
 model Team {
@@ -31,4 +32,15 @@ model Team {
   frequency String
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
+}
+
+model Meeting {
+  id         Int      @id @default(autoincrement())
+  day        String
+  time       String
+  frequency  String
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  teamId     Int
+  team       Team     @relation(fields: [teamId], references: [id])
 }
