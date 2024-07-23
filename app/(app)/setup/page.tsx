@@ -35,7 +35,7 @@ export default function SetupPage() {
 
   const handleTeamFormSubmit = async () => {
     try {
-      const response = await fetch('/api/submitForm', {
+      const response = await fetch('/api/forms', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
