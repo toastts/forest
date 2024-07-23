@@ -31,15 +31,4 @@ model Team {
   frequency String
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
-  meetings  Meeting[]
-}
-
-model Meeting {
-  id        Int      @id @default(autoincrement())
-  day       String
-  time      String
-  frequency String
-  teamId    Int
-  team      Team     @relation(fields: [teamId], references: [id])
-  notes     Note[]
 }

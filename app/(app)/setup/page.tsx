@@ -34,16 +34,24 @@ export default function SetupPage() {
   };
 
   const handleTeamFormSubmit = async () => {
-    // const response = await fetch('/api/analyze', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(formData),
-    // });
-    // const result = await response.json();
-    // console.log('API Response:', result);
-    console.log('Form Data:', formData);
+    try {
+      const response = await fetch('/api/submitForm', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('API Response:', result);
+      } else {
+        console.error('Failed to submit form');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
   };
 
   const handleAddTeamMember = (data: CombinedFormValues['teamForm'][0]) => {
