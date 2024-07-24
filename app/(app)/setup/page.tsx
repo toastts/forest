@@ -12,9 +12,9 @@ interface CombinedFormValues {
     name: string;
     role: string;
     email: string;
-    prompt: string;
+    prompt?: string;
   };
-  meetingForm: {
+  meetingForms: {
     name: string;
     role: string;
     email: string;
@@ -26,7 +26,7 @@ interface CombinedFormValues {
 
 export default function SetupPage() {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState<Partial<CombinedFormValues>>({ meetingForm: [] });
+  const [formData, setFormData] = useState<Partial<CombinedFormValues>>({ meetingForms: [] });
 
   const handleUserFormSubmit = (data: CombinedFormValues['userForm']) => {
     setFormData((prev) => ({ ...prev, userForm: data }));
@@ -54,10 +54,10 @@ export default function SetupPage() {
     }
   };
 
-  const handleAddMeeting = (data: CombinedFormValues['meetingForm'][0]) => {
+  const handleAddMeeting = (data: CombinedFormValues['meetingForms'][0]) => {
     setFormData((prev) => ({
       ...prev,
-      meetingForm: [...(prev.meetingForm || []), data],
+      meetingForms: [...(prev.meetingForms || []), data],
     }));
   };
 
@@ -72,8 +72,7 @@ export default function SetupPage() {
           </CardHeader>
         </Card>
       }
-      {/*DISPLAY THE CREATED MEETINGS HERE*/}
-      {formData.meetingForm && formData.meetingForm.map((meeting, index) => (
+      {formData.meetingForms && formData.meetingForms.map((meeting, index) => (
         <Card key={index} className="w-[600px] bg-background-primary p-8 mt-4">
           <CardHeader>
             <CardTitle>{meeting.name}</CardTitle>
@@ -91,7 +90,7 @@ export default function SetupPage() {
           :
           <MeetingOnboardForm onSubmit={handleMeetingFormSubmit} onAddMeeting={handleAddMeeting} />}
       </Card>
-      {step === 2 && formData.meetingForm && formData.meetingForm.length > 0 && (
+      {step === 2 && formData.meetingForms && formData.meetingForms.length > 0 && (
         <Button onClick={handleMeetingFormSubmit} variant="outline" className="mt-4 self-end">
           Submit
         </Button>
