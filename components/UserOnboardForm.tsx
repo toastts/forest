@@ -8,6 +8,7 @@ import { Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage } 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Textarea } from '@/components/ui/textarea';
+import { TablesInsert } from '@/lib/database.types';
 
 interface OnboardFormValues {
   name: string;
@@ -24,11 +25,11 @@ const FormSchema = z.object({
 });
 
 interface UserOnboardFormProps {
-  onSubmit: (data: OnboardFormValues) => void;
+  onSubmit: (data: TablesInsert<'users'>) => void;
 }
 
 export default function UserOnboardForm({ onSubmit }: UserOnboardFormProps) {
-  const form = useForm<OnboardFormValues>({
+  const form = useForm<TablesInsert<'users'>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       name: '',
@@ -87,7 +88,7 @@ export default function UserOnboardForm({ onSubmit }: UserOnboardFormProps) {
               <Controller
                 name="prompt"
                 control={form.control}
-                render={({ field }) => <Textarea placeholder="Enter your response" {...field} />}
+                render={({ field }) => <Textarea placeholder="Enter your response" {...field} value={field.value ?? ''} />}
               />
             </FormControl>
             <FormDescription>Share your thoughts on how we can assist you</FormDescription>

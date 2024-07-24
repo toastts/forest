@@ -6,22 +6,11 @@ import UserOnboardForm from '@/components/UserOnboardForm';
 import MeetingOnboardForm from '@/components/MeetingOnboardForm';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { TablesInsert } from '@/lib/database.types';
 
 interface CombinedFormValues {
-  userForm: {
-    name: string;
-    role: string;
-    email: string;
-    prompt?: string;
-  };
-  meetingForms: {
-    name: string;
-    role: string;
-    email: string;
-    day: string;
-    time: string;
-    frequency: string;
-  }[];
+  userForm: TablesInsert<'users'>;
+  meetingForms: TablesInsert<'meetings'>[];
 }
 
 export default function SetupPage() {
