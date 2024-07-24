@@ -4,14 +4,17 @@ import { scheduleEmail } from '@/lib/scheduler';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    const { teamId, day, time, frequency } = req.body;
+    const { userId, name, role, email, day, time, frequency } = req.body;
 
     const meeting = await prisma.meeting.create({
       data: {
+        name,
+        role,
+        email,
         day,
         time,
         frequency,
-        team: { connect: { id: teamId } },
+        userId,
       },
     });
 

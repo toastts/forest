@@ -1,8 +1,5 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { Resend } from 'resend';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface UserForm {
   name: string;
@@ -10,7 +7,7 @@ interface UserForm {
   email: string;
 }
 
-interface TeamForm {
+interface MeetingForm {
   name: string;
   role: string;
   email: string;
@@ -21,63 +18,57 @@ interface TeamForm {
 
 interface RequestBody {
   userForm: UserForm;
-  teamForm: TeamForm[];
+  meetingForms: MeetingForm[];
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    const { userForm, teamForm }: RequestBody = req.body;
+export async function POST(request: Request) {
+  const { userForm, meetingForms }: RequestBody = await request.json();
 
-    try {
-      // Save user data
-      const user = await prisma.user.create({
+  try {
+    console.log('Received userForm:', userForm);
+    console.log('Received meetingForms:', meetingForms);
+
+    // Save user data
+    const user = await prisma.user.create({
+      data: {
+        name: userForm.name,
+        role: userForm.role,
+        email: userForm.email,
+      },
+    });
+
+    console.log('User created:', user);
+
+    // Save meeting data
+    const meetingPromises = meetingForms.map((meetingForm) =>
+      prisma.meeting.create({
         data: {
-          name: userForm.name,
-          role: userForm.role,
-          email: userForm.email,
+          name: meetingForm.name,
+          role: meetingForm.role,
+          email: meetingForm.email,
+          day: meetingForm.day,
+          time: meetingForm.time,
+          frequency: meetingForm.frequency,
+          userId: user.id,
         },
-      });
+      })
+    );
 
-      // Save team data and create meetings
-      const teamPromises = teamForm.map((teamMember) =>
-        prisma.team.create({
-          data: {
-            name: teamMember.name,
-            role: teamMember.role,
-            email: teamMember.email,
-            day: teamMember.day,
-            time: teamMember.time,
-            frequency: teamMember.frequency,
-            userId: user.id,
-          },
-        }).then((team) => {
-          return prisma.meeting.create({
-            data: {
-              day: teamMember.day,
-              time: teamMember.time,
-              frequency: teamMember.frequency,
-              userId: user.id,
-              teamId: team.id,
-            },
-          });
-        })
-      );
+    const meetings = await Promise.all(meetingPromises);
 
-      const teams = await Promise.all(teamPromises);
+    console.log('Meetings created:', meetings);
 
-      // Send email using Resend
-      await resend.emails.send({
-        from: 'no-reply@yourapp.com',
-        to: userForm.email,
-        subject: 'Welcome to Forest',
-        text: 'Your team has been successfully set up.',
-      });
+    // Replace email sending with console.log
+    console.log('Welcome!');
+    console.log(`Email would be sent to: ${userForm.email}`);
 
-      res.status(201).json({ user, teams });
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to save data' });
-    }
-  } else {
-    res.status(405).end();
+    return NextResponse.json({ user, meetings }, { status: 201 });
+  } catch (error) {
+    console.error('Error saving data:', error);
+    return NextResponse.json({ error: 'Failed to save data' }, { status: 500 });
   }
+}
+
+export async function GET(request: Request) {
+  return NextResponse.json({ message: 'GET request handled' });
 }

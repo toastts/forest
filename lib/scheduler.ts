@@ -6,19 +6,22 @@ interface Meeting {
   day: string;
   time: string;
   frequency: string;
-  team: {
+  user: {
     id: number;
   };
+  name: string;
+  role: string;
+  email: string;
 }
 
 export function scheduleEmail(meeting: Meeting) {
-  const { day, time, frequency, team } = meeting;
+  const { day, time, frequency, user, name, role, email } = meeting;
   const cronExpression = getCronExpression(day, time, frequency);
 
   cron.schedule(cronExpression, async () => {
-    const teamMember = await prisma.team.findUnique({ where: { id: team.id } });
-    if (teamMember) {
-      sendEmail(teamMember.email, 'Meeting Reminder', `You have a meeting scheduled at ${time} on ${day}`);
+    const userRecord = await prisma.user.findUnique({ where: { id: user.id } });
+    if (userRecord) {
+      sendEmail(userRecord.email, 'Meeting Reminder', `You have a meeting scheduled at ${time} on ${day} with ${name} (${role}) at ${email}`);
     }
   });
 }

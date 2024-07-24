@@ -29,12 +29,12 @@ const FormSchema = z.object({
   frequency: z.string().min(1, { message: 'Frequency is required' }),
 });
 
-interface TeamOnboardFormProps {
+interface MeetingOnboardFormProps {
   onSubmit: (data: OnboardFormValues) => void;
-  onAddMember: (data: OnboardFormValues) => void;
+  onAddMeeting: (data: OnboardFormValues) => void;
 }
 
-export default function TeamOnboardForm({ onSubmit, onAddMember }: TeamOnboardFormProps) {
+export default function MeetingOnboardForm({ onSubmit, onAddMeeting }: MeetingOnboardFormProps) {
   const form = useForm<OnboardFormValues>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -48,7 +48,7 @@ export default function TeamOnboardForm({ onSubmit, onAddMember }: TeamOnboardFo
   });
 
   const handleAddMember = (data: OnboardFormValues) => {
-    onAddMember(data);
+    onAddMeeting(data);
     form.reset();
   };
 

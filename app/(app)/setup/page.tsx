@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import UserOnboardForm from '@/components/UserOnboardForm';
-import TeamOnboardForm from '@/components/TeamOnboardForm';
+import MeetingOnboardForm from '@/components/MeetingOnboardForm';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -14,7 +14,7 @@ interface CombinedFormValues {
     email: string;
     prompt: string;
   };
-  teamForm: {
+  meetingForm: {
     name: string;
     role: string;
     email: string;
@@ -26,14 +26,14 @@ interface CombinedFormValues {
 
 export default function SetupPage() {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState<Partial<CombinedFormValues>>({ teamForm: [] });
+  const [formData, setFormData] = useState<Partial<CombinedFormValues>>({ meetingForm: [] });
 
   const handleUserFormSubmit = (data: CombinedFormValues['userForm']) => {
     setFormData((prev) => ({ ...prev, userForm: data }));
     setStep(2);
   };
 
-  const handleTeamFormSubmit = async () => {
+  const handleMeetingFormSubmit = async () => {
     try {
       const response = await fetch('/api/forms', {
         method: 'POST',
@@ -54,45 +54,45 @@ export default function SetupPage() {
     }
   };
 
-  const handleAddTeamMember = (data: CombinedFormValues['teamForm'][0]) => {
+  const handleAddMeeting = (data: CombinedFormValues['meetingForm'][0]) => {
     setFormData((prev) => ({
       ...prev,
-      teamForm: [...(prev.teamForm || []), data],
+      meetingForm: [...(prev.meetingForm || []), data],
     }));
   };
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
-      {step == 2 && 
-      <Card className="w-[600px] bg-background-primary p-8">
-        <CardHeader>
-          <CardDescription>
-            Let's get your team and meetings set up in Forest. We're trying to let you sync your calendar but for now you have to do it manually like a loser.
-          </CardDescription>
-        </CardHeader>
-      </Card>
-    }
-    {/*DISPLAY THE CREATED TEAM MEMBERS HERE*/}
-      {formData.teamForm && formData.teamForm.map((member, index) => (
+      {step == 2 &&
+        <Card className="w-[600px] bg-background-primary p-8">
+          <CardHeader>
+            <CardDescription>
+              Let's get your meetings set up in Forest. We're trying to let you sync your calendar but for now you have to do it manually like a loser.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      }
+      {/*DISPLAY THE CREATED MEETINGS HERE*/}
+      {formData.meetingForm && formData.meetingForm.map((meeting, index) => (
         <Card key={index} className="w-[600px] bg-background-primary p-8 mt-4">
           <CardHeader>
-            <CardTitle>{member.name}</CardTitle>
-            <CardDescription>{member.role}</CardDescription>
+            <CardTitle>{meeting.name}</CardTitle>
+            <CardDescription>{meeting.role}</CardDescription>
           </CardHeader>
-          <div>Email: {member.email}</div>
-          <div>Meeting Day: {member.day}</div>
-          <div>Meeting Time: {member.time}</div>
-          <div>Meeting Frequency: {member.frequency}</div>
+          <div>Email: {meeting.email}</div>
+          <div>Meeting Day: {meeting.day}</div>
+          <div>Meeting Time: {meeting.time}</div>
+          <div>Meeting Frequency: {meeting.frequency}</div>
         </Card>
       ))}
       <Card className="w-[600px] bg-background-primary p-8 mt-4">
         {step === 1 ?
           <UserOnboardForm onSubmit={handleUserFormSubmit} />
           :
-          <TeamOnboardForm onSubmit={handleTeamFormSubmit} onAddMember={handleAddTeamMember} />}
+          <MeetingOnboardForm onSubmit={handleMeetingFormSubmit} onAddMeeting={handleAddMeeting} />}
       </Card>
-      {step === 2 && formData.teamForm && formData.teamForm.length > 0 && (
-        <Button onClick={handleTeamFormSubmit} variant="outline" className="mt-4 self-end">
+      {step === 2 && formData.meetingForm && formData.meetingForm.length > 0 && (
+        <Button onClick={handleMeetingFormSubmit} variant="outline" className="mt-4 self-end">
           Submit
         </Button>
       )}
