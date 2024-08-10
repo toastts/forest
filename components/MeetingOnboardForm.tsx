@@ -17,6 +17,7 @@ interface OnboardFormValues {
   day: string;
   time: string;
   frequency: string;
+  user_id: number; // Added user_id field to match TablesInsert<'meetings'> type
 }
 
 const FormSchema = z.object({
@@ -26,6 +27,7 @@ const FormSchema = z.object({
   day: z.string().min(1, { message: 'Day is required' }),
   time: z.string().min(1, { message: 'Time is required' }),
   frequency: z.string().min(1, { message: 'Frequency is required' }),
+  user_id: z.number().positive().optional(), // Added user_id field with optional positive number type
 });
 
 interface MeetingOnboardFormProps {
@@ -43,6 +45,7 @@ export default function MeetingOnboardForm({ onSubmit, onAddMeeting }: MeetingOn
       day: '',
       time: '',
       frequency: '',
+      user_id: 0, // Initialize user_id to 0
     },
   });
 
@@ -61,7 +64,7 @@ export default function MeetingOnboardForm({ onSubmit, onAddMeeting }: MeetingOn
               <Controller
                 name="name"
                 control={form.control}
-                render={({ field }) => <Input placeholder="Enter name" {...field} />}
+                render={({ field }) => <Input placeholder="Enter name" {...field} value={field.value ?? ''} />}
               />
             </FormControl>
             <FormDescription>Your name</FormDescription>
@@ -74,7 +77,7 @@ export default function MeetingOnboardForm({ onSubmit, onAddMeeting }: MeetingOn
               <Controller
                 name="role"
                 control={form.control}
-                render={({ field }) => <Input placeholder="Enter role" {...field} />}
+                render={({ field }) => <Input placeholder="Enter role" {...field} value={field.value ?? ''} />}
               />
             </FormControl>
             <FormDescription>Your role</FormDescription>
@@ -88,7 +91,7 @@ export default function MeetingOnboardForm({ onSubmit, onAddMeeting }: MeetingOn
             <Controller
               name="email"
               control={form.control}
-              render={({ field }) => <Input placeholder="Enter email" {...field} />}
+              render={({ field }) => <Input placeholder="Enter email" {...field} value={field.value ?? ''} />}
             />
           </FormControl>
           <FormDescription>Your email address</FormDescription>
@@ -101,7 +104,7 @@ export default function MeetingOnboardForm({ onSubmit, onAddMeeting }: MeetingOn
             <Controller
               name="day"
               control={form.control}
-              render={({ field }) => <Input placeholder="Enter day" {...field} />}
+              render={({ field }) => <Input placeholder="Enter day" {...field} value={field.value ?? ''} />}
             />
           </FormControl>
           <FormDescription>Meeting day</FormDescription>
@@ -114,7 +117,7 @@ export default function MeetingOnboardForm({ onSubmit, onAddMeeting }: MeetingOn
             <Controller
               name="time"
               control={form.control}
-              render={({ field }) => <Input placeholder="Enter time" {...field} />}
+              render={({ field }) => <Input placeholder="Enter time" {...field} value={field.value ?? ''} />}
             />
           </FormControl>
           <FormDescription>Meeting time</FormDescription>
@@ -127,7 +130,7 @@ export default function MeetingOnboardForm({ onSubmit, onAddMeeting }: MeetingOn
             <Controller
               name="frequency"
               control={form.control}
-              render={({ field }) => <Input placeholder="Enter frequency" {...field} />}
+              render={({ field }) => <Input placeholder="Enter frequency" {...field} value={field.value ?? ''} />}
             />
           </FormControl>
           <FormDescription>Meeting frequency</FormDescription>

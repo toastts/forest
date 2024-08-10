@@ -40,64 +40,64 @@ export default function UserOnboardForm({ onSubmit }: UserOnboardFormProps) {
   });
 
   return (
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="flex space-x-4">
-            <FormItem className="w-7/12">
-              <FormLabel className="text-text-primary">Name</FormLabel>
-              <FormControl>
-                <Controller
-                  name="name"
-                  control={form.control}
-                  render={({ field }) => <Input placeholder="Enter name" {...field} />}
-                />
-              </FormControl>
-              <FormDescription>Your team member's name</FormDescription>
-              <FormMessage />
-            </FormItem>
-
-            <FormItem>
-              <FormLabel className="text-text-primary">Role</FormLabel>
-              <FormControl>
-                <Controller
-                  name="role"
-                  control={form.control}
-                  render={({ field }) => <Input placeholder="Enter role" {...field} />}
-                />
-              </FormControl>
-              <FormDescription>Your team member's role</FormDescription>
-              <FormMessage />
-            </FormItem>
-          </div>
-
-          <FormItem>
-            <FormLabel className="text-text-primary">Email</FormLabel>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <div className="flex space-x-4">
+          <FormItem className="w-7/12">
+            <FormLabel className="text-text-primary">Name</FormLabel>
             <FormControl>
               <Controller
-                name="email"
+                name="name"
                 control={form.control}
-                render={({ field }) => <Input placeholder="Enter email" {...field} />}
+                render={({ field }) => <Input placeholder="Enter name" {...field} value={field.value ?? ''} />}
               />
             </FormControl>
-            <FormDescription>Your team member's email address</FormDescription>
+            <FormDescription>Your team member's name</FormDescription>
             <FormMessage />
           </FormItem>
+
           <FormItem>
-            <FormLabel className="text-text-primary">How can Forest help you improve your 1:1s?</FormLabel>
+            <FormLabel className="text-text-primary">Role</FormLabel>
             <FormControl>
               <Controller
-                name="prompt"
+                name="role"
                 control={form.control}
-                render={({ field }) => <Textarea placeholder="Enter your response" {...field} value={field.value ?? ''} />}
+                render={({ field }) => <Input placeholder="Enter role" {...field} value={field.value ?? ''} />}
               />
             </FormControl>
-            <FormDescription>Share your thoughts on how we can assist you</FormDescription>
+            <FormDescription>Your team member's role</FormDescription>
             <FormMessage />
           </FormItem>
-          <Button type="submit" variant="outline" className="w-full text-branding-bright border-background-border bg-background-primary">
-            Submit
-          </Button>
-        </form>
-      </Form>
+        </div>
+
+        <FormItem>
+          <FormLabel className="text-text-primary">Email</FormLabel>
+          <FormControl>
+            <Controller
+              name="email"
+              control={form.control}
+              render={({ field }) => <Input placeholder="Enter email" {...field} value={field.value ?? ''} />}
+            />
+          </FormControl>
+          <FormDescription>Your team member's email address</FormDescription>
+          <FormMessage />
+        </FormItem>
+        <FormItem>
+          <FormLabel className="text-text-primary">How can Forest help you improve your 1:1s?</FormLabel>
+          <FormControl>
+            <Controller
+              name="prompt"
+              control={form.control}
+              render={({ field }) => <Textarea placeholder="Enter your response" {...field} value={field.value ?? ''} />}
+            />
+          </FormControl>
+          <FormDescription>Share your thoughts on how we can assist you</FormDescription>
+          <FormMessage />
+        </FormItem>
+        <Button type="submit" variant="outline" className="w-full text-branding-bright border-background-border bg-background-primary">
+          Submit
+        </Button>
+      </form>
+    </Form>
   );
 }

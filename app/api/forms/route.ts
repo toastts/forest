@@ -14,6 +14,11 @@ export async function POST(request: Request) {
     console.log('Received userForm:', userForm);
     console.log('Received meetingForms:', meetingForms);
 
+    // Validate prompt field (example: ensure it's not too long)
+    if ((userForm.prompt ?? '').length > 255) {
+      throw new Error('Prompt is too long');
+    }
+
     // Save user data
     const { data: user, error: userError } = await supabase
       .from('users')

@@ -11,33 +11,39 @@ export type Database = {
     Tables: {
       meetings: {
         Row: {
-          day: string
-          email: string
-          frequency: string
+          created_at: string | null
+          day: string | null
+          email: string | null
+          frequency: string | null
           id: number
           name: string
-          role: string
-          time: string
+          role: string | null
+          time: string | null
+          updated_at: string | null
           user_id: number
         }
         Insert: {
-          day?: string
-          email?: string
-          frequency?: string
+          created_at?: string | null
+          day?: string | null
+          email?: string | null
+          frequency?: string | null
           id?: number
-          name?: string
-          role?: string
-          time?: string
+          name: string
+          role?: string | null
+          time?: string | null
+          updated_at?: string | null
           user_id: number
         }
         Update: {
-          day?: string
-          email?: string
-          frequency?: string
+          created_at?: string | null
+          day?: string | null
+          email?: string | null
+          frequency?: string | null
           id?: number
           name?: string
-          role?: string
-          time?: string
+          role?: string | null
+          time?: string | null
+          updated_at?: string | null
           user_id?: number
         }
         Relationships: [
@@ -50,27 +56,75 @@ export type Database = {
           },
         ]
       }
+      notes: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          id: number
+          meeting_id: number | null
+          updated_at: string | null
+          user_id: number
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          id?: number
+          meeting_id?: number | null
+          updated_at?: string | null
+          user_id: number
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          id?: number
+          meeting_id?: number | null
+          updated_at?: string | null
+          user_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notes_meeting_id_fkey"
+            columns: ["meeting_id"]
+            isOneToOne: false
+            referencedRelation: "meetings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
+          created_at: string | null
           email: string
           id: number
           name: string
           prompt: string | null
-          role: string
+          role: string | null
+          updated_at: string | null
         }
         Insert: {
+          created_at?: string | null
           email: string
           id?: number
-          name?: string
+          name: string
           prompt?: string | null
-          role?: string
+          role?: string | null
+          updated_at?: string | null
         }
         Update: {
+          created_at?: string | null
           email?: string
           id?: number
           name?: string
           prompt?: string | null
-          role?: string
+          role?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
