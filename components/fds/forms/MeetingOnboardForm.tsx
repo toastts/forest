@@ -1,62 +1,73 @@
 'use client';
 
 import * as React from 'react';
-import { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { TablesInsert } from '@/lib/database.types';
+import { useSetupFormContext } from '@/components/fds/forms/SetupFormContext';
+import { handleMeetingOnboardFormSubmit } from '@/app/setup/actions';
 
-interface OnboardFormValues {
-  name: string;
-  role: string;
-  email: string;
-  day: string;
-  time: string;
-  frequency: string;
-  user_id: number; // Added user_id field to match TablesInsert<'meetings'> type
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+enum Day {
+  Monday = 'Monday',
+  Tuesday = 'Tuesday',
+  Wednesday = 'Wednesday',
+  Thursday = 'Thursday',
+  Friday = 'Friday',
+  Saturday = 'Saturday',
+  Sunday = 'Sunday'
 }
 
-const FormSchema = z.object({
+enum Frequency {
+  Daily = 'Daily',
+  Weekly = 'Weekly',
+  Biweekly = 'Biweekly',
+  Monthly = 'Monthly'
+
+}
+
+export const MeetingOnboardFormSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
   role: z.string().min(1, { message: 'Role is required' }),
   email: z.string().email({ message: 'Invalid email address' }),
-  day: z.string().min(1, { message: 'Day is required' }),
-  time: z.string().min(1, { message: 'Time is required' }),
-  frequency: z.string().min(1, { message: 'Frequency is required' }),
-  user_id: z.number().positive().optional(), // Added user_id field with optional positive number type
+  day: z.nativeEnum(Day),
+  //kinda jank way to validate a time string but input=time sorta guarantees type safety
+  time: z.string().transform((val) => val + ':00'),
+  frequency: z.nativeEnum(Frequency),
 });
 
-interface MeetingOnboardFormProps {
-  onSubmit: () => Promise<void>;
-  onAddMeeting: (data: TablesInsert<'meetings'>) => void;
-}
+export type MeetingOnboardFormValues = z.infer<typeof MeetingOnboardFormSchema>;
 
-export default function MeetingOnboardForm({ onSubmit, onAddMeeting }: MeetingOnboardFormProps) {
-  const form = useForm<TablesInsert<'meetings'>>({
-    resolver: zodResolver(FormSchema),
+
+
+export const MeetingOnboardForm = () => {
+  const form = useForm<MeetingOnboardFormValues>({
+    resolver: zodResolver(MeetingOnboardFormSchema),
     defaultValues: {
       name: '',
       role: '',
       email: '',
-      day: '',
+      day: Day.Monday,
       time: '',
-      frequency: '',
-      user_id: 0, // Initialize user_id to 0
+      frequency: Frequency.Weekly,
     },
   });
+  const { meetings, setMeetings } = useSetupFormContext();
 
-  const handleAddMeeting = (data: TablesInsert<'meetings'>) => {
-    onAddMeeting(data);
-    form.reset();
+  const handleSubmit = async () => {
+    await handleMeetingOnboardFormSubmit(meetings);
   };
+
+  const handleAddMeeting = () => {
+    setMeetings((prev) => [])
+  }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleAddMeeting)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <div className="flex space-x-4">
           <FormItem className="w-7/12">
             <FormLabel className="text-text-primary">Name</FormLabel>
@@ -137,13 +148,13 @@ export default function MeetingOnboardForm({ onSubmit, onAddMeeting }: MeetingOn
           <FormMessage />
         </FormItem>
 
-        <Button type="submit" variant="outline" className="w-full text-branding-bright border-background-border bg-background-primary">
+        <Button type="button" onClick={handleAddMeeting} variant="outline" className="w-full text-branding-bright border-background-border bg-background-primary">
           Add Meeting
         </Button>
+        <Button type="submit" variant="outline" className="w-full text-branding-bright border-background-border bg-background-primary mt-4">
+          Submit
+        </Button>
       </form>
-      <Button onClick={onSubmit} variant="outline" className="w-full text-branding-bright border-background-border bg-background-primary mt-4">
-        Submit All
-      </Button>
     </Form>
   );
 }

@@ -1,23 +1,39 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useForm, Controller } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { login, signup } from './actions';
+
+const FormSchema = z.object({
+  email: z.string().email({ message: 'Invalid email address' }),
+  password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
+});
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const router = useRouter();
+  const [isLogin, setIsLogin] = useState(true);
 
-  const handleEmailChange = (e: any) => {
-    setEmail(e.target.value);
-  };
+  const form = useForm({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
 
-  // for now we're just skipping actually setting this up
-  const handleEmailSubmit = (e: any) => {
-    e.preventDefault();
-    router.push('/setup');
-  };
+  const onSubmit = async (data: { email: string; password: string }) => {
+    const formData = new FormData();
+    formData.append('email', data.email);
+    formData.append('password', data.password);
 
-  const handleSkip = () => {
-    router.push('/setup');
+    if (isLogin) {
+      await login(formData);
+    } else {
+      await signup(formData);
+    }
   };
 
   return (
@@ -25,27 +41,42 @@ export default function LoginPage() {
       <div className="text-center mb-12">
         <div className="text-5xl mb-12">Forest</div>
         <div className="w-full max-w-sm">
-          <div className="mb-4">
-            <button className="w-full py-2 bg-oliveGrey border border-gray-600 rounded-md text-green-400">Slack</button>
-          </div>
-          <form onSubmit={handleEmailSubmit} className="w-full">
-            <input
-              type="email"
-              value={email}
-              onChange={handleEmailChange}
-              placeholder="Enter your email"
-              className="w-full p-2 mb-4 bg-oliveGrey border border-gray-600 rounded-md text-green-400 focus:outline-none focus:ring-2 focus:ring-green-400"
-            />
-            <button type="submit" className="w-full py-2 bg-oliveGrey border border-gray-600 rounded-md text-green-400">
-              Submit
-            </button>
-          </form>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormItem>
+                <FormLabel className="text-text-primary">Email</FormLabel>
+                <FormControl>
+                  <Controller
+                    name="email"
+                    control={form.control}
+                    render={({ field }) => <Input placeholder="Enter email" {...field} value={field.value ?? ''} />}
+                  />
+                </FormControl>
+                <FormDescription>Your email address</FormDescription>
+                <FormMessage />
+              </FormItem>
+              <FormItem>
+                <FormLabel className="text-text-primary">Password</FormLabel>
+                <FormControl>
+                  <Controller
+                    name="password"
+                    control={form.control}
+                    render={({ field }) => <Input type="password" placeholder="Enter password" {...field} value={field.value ?? ''} />}
+                  />
+                </FormControl>
+                <FormDescription>Your password</FormDescription>
+                <FormMessage />
+              </FormItem>
+              <Button type="submit" variant="outline" className="w-full text-branding-bright border-background-border bg-background-primary">
+                {isLogin ? 'Login' : 'Sign Up'}
+              </Button>
+            </form>
+          </Form>
+          <button onClick={() => setIsLogin(!isLogin)} className="mt-6 text-gray-400 px-0">
+            {isLogin ? 'Create an account' : 'Already have an account? Login'}
+          </button>
         </div>
-        <button onClick={handleSkip} className="mt-6 text-gray-400 px-0">
-          Skip
-        </button>
       </div>
     </div>
   );
 }
-
