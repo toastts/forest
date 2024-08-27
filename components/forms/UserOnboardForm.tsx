@@ -1,48 +1,56 @@
 'use client';
 
-import * as React from 'react';
-import { useFormState } from 'react-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage
+} from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Textarea } from '@/components/ui/textarea';
-import { handleUserOnboardFormSubmitAction } from '@/app/setup/actions';
-import { useSetupFormContext } from '@/components/fds/forms/SetupFormContext';
-import { UserOnboardFormSchema } from '@/components/fds/forms/FormSchemas';
-
+import { useSetupFormContext } from '@/components/forms/SetupFormContext';
+import { UserOnboardFormSchema } from '@/components/forms/FormSchemas';
+import { submitUserOnboardAction } from '@/app/setup/actions';
 
 export const UserOnboardForm = () => {
   const { setCurrentStep } = useSetupFormContext()
-  const [state, formAction] = useFormState(handleUserOnboardFormSubmitAction, {
-    message: "",
-  })
   const form = useForm<z.output<typeof UserOnboardFormSchema>>({
     resolver: zodResolver(UserOnboardFormSchema),
     defaultValues: {
       name: "",
       role: "",
       prompt: "",
-      ...(state?.fields ?? {})
     },
   });
 
-  const handleSubmit = async (data: z.output<typeof UserOnboardFormSchema>) => {
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("role", data.role);
-    formData.append("prompt", data.prompt);
-    await handleUserOnboardFormSubmitAction(formData);
-    setCurrentStep(2);
-
-  }
+  const onSubmit = async (data: {
+    name: string;
+    role: string,
+    prompt: string
+  }) => {
+    console.log(data)
+    const submission = await submitUserOnboardAction(data);
+    console.log(submission)
+    if (!submission) {
+      console.log('ERROR ON USER SUBMIT')
+    }
+    else {
+      setCurrentStep(2);
+    }
+  };
 
   return (
     <Form {...form}>
-      <form action={formAction} onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4"
+      >
         <FormItem>
           <FormLabel className="text-text-primary">Role</FormLabel>
           <FormControl>
@@ -55,7 +63,6 @@ export const UserOnboardForm = () => {
           <FormDescription>What should we call you?</FormDescription>
           <FormMessage />
         </FormItem>
-
         <FormItem>
           <FormLabel className="text-text-primary">Role</FormLabel>
           <FormControl>
@@ -68,7 +75,6 @@ export const UserOnboardForm = () => {
           <FormDescription>What do you do?</FormDescription>
           <FormMessage />
         </FormItem>
-
         <FormItem>
           <FormLabel className="text-text-primary">How can Forest help you with your 1:1s?</FormLabel>
           <FormControl>
@@ -81,6 +87,7 @@ export const UserOnboardForm = () => {
           <FormDescription>What's something you want to improve on?</FormDescription>
           <FormMessage />
         </FormItem>
+
         <Button type="submit" variant="outline" className="w-full text-branding-bright border-background-border bg-background-primary">
           Submit
         </Button>

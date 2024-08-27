@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { MultipartForm } from '@/components/fds/forms/MultipartForm';
-import { SetupProvider } from '@/app/setup/context';
+import { MultipartForm } from '@/components/forms/MultipartForm';
 
 
 export default function SetupPage() {

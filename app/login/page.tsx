@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { login, signup } from './actions';
+import { loginAction, signupAction } from './actions';
 
 const FormSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),
@@ -30,9 +30,9 @@ export default function LoginPage() {
     formData.append('password', data.password);
 
     if (isLogin) {
-      await login(formData);
+      await loginAction(formData);
     } else {
-      await signup(formData);
+      await signupAction(formData);
     }
   };
 

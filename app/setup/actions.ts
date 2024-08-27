@@ -2,62 +2,70 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { MeetingOnboardFormSchema, MeetingOnboardFormValues } from '@/components/fds/forms/MeetingOnboardForm'
 
-import { UserOnboardFormSchema } from '@/components/fds/forms/FormSchemas'
+// update the user record with the new information
+export async function submitUserOnboardAction(formData: {
+  name: string;
+  role: string,
+  prompt: string
+}): Promise<boolean> {
 
-export type FormState = {
-  message: string;
-  fields?: Record<string, string>;
-  issues?: string[];
-};
-
-export async function handleUserOnboardFormSubmitAction(prevState: FormState, formData: FormData): Promise<FormState> {
   const supabase = createClient()
-  const { data, error } = await supabase.auth.getUser()
-  const formObj = Object.fromEntries(formData)
-  const parsed = MeetingOnboardFormSchema.safeParse(formObj)
+  const { data: { user }, error } = await supabase.auth.getUser()
 
-
-  // send them back to login if there's no session
-  if (error || !data?.user) {
-    redirect('/login')
+  if (error || !user) {
+    return false;
   }
 
-  const submissionData = {
-    ...formData,
-    ...data
+  console.log("USER FORM SUBMISSION")
+  console.log(formData)
+
+  const res = await supabase
+    .from('users')
+    .update(formData)
+    .eq('id', user.id)
+
+  console.log(res)
+
+  if (res.error) {
+    return false;
   }
-
-
-  if (!parsed.success) {
-    const fields: Record<string, string> = {};
-    for (const key of Object.keys(formData)) {
-      fields[key] = formObj[key].toString();
-    }
-    return {
-      message: "Invalid form data",
-      fields,
-      issues: parsed.error.issues.map((issue) => issue.message),
-    };
-  }
-
-  return { success: "true", message: "User profile created" };
+  return true;
 }
 
-export async function handleMeetingOnboardFormSubmitAction(formData: MeetingOnboardFormValues[]) {
+export async function submitMeetingOnboardAction(formData: {
+  name: string,
+  role: string,
+  email: string,
+  day: string,
+  time: string,
+  frequency: string
+}[]): Promise<boolean> {
+
   const supabase = createClient()
-  const { data, error } = await supabase.auth.getUser()
-  const submissionData = {
-    ...formData,
-    ...data
-  }
-  console.log(submissionData)
+  const { data: { user }, error } = await supabase.auth.getUser()
 
-  // send them back to login if there's no session
-  if (error || !data?.user) {
-    redirect('/login')
+  if (error || !user) {
+    return false;
   }
 
+  console.log("MEETING FORM SUBMISSION")
+  console.log(formData)
+
+  // add user_id to each object in the formData array
+  const updatedFormData = formData.map(meeting => ({
+    ...meeting,
+    user_id: user.id
+  }));
+
+  const res = await supabase
+    .from('meetings')
+    .insert(updatedFormData);
+
+  if (res.error) {
+    console.error(res.error);
+    return false;
+  }
+
+  return true;
 }
-

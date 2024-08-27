@@ -4,70 +4,50 @@ import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form';
-import { useSetupFormContext } from '@/components/fds/forms/SetupFormContext';
-import { handleMeetingOnboardFormSubmit } from '@/app/setup/actions';
-
+import {
+  Form,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage
+} from '@/components/ui/form';
+import { useSetupFormContext } from '@/components/forms/SetupFormContext';
+import { submitMeetingOnboardAction } from '@/app/setup/actions';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-
-enum Day {
-  Monday = 'Monday',
-  Tuesday = 'Tuesday',
-  Wednesday = 'Wednesday',
-  Thursday = 'Thursday',
-  Friday = 'Friday',
-  Saturday = 'Saturday',
-  Sunday = 'Sunday'
-}
-
-enum Frequency {
-  Daily = 'Daily',
-  Weekly = 'Weekly',
-  Biweekly = 'Biweekly',
-  Monthly = 'Monthly'
-
-}
-
-export const MeetingOnboardFormSchema = z.object({
-  name: z.string().min(1, { message: 'Name is required' }),
-  role: z.string().min(1, { message: 'Role is required' }),
-  email: z.string().email({ message: 'Invalid email address' }),
-  day: z.nativeEnum(Day),
-  //kinda jank way to validate a time string but input=time sorta guarantees type safety
-  time: z.string().transform((val) => val + ':00'),
-  frequency: z.nativeEnum(Frequency),
-});
-
-export type MeetingOnboardFormValues = z.infer<typeof MeetingOnboardFormSchema>;
-
+import { MeetingOnboardFormSchema, Day, Frequency } from './FormSchemas';
 
 
 export const MeetingOnboardForm = () => {
-  const form = useForm<MeetingOnboardFormValues>({
+  const form = useForm<z.output<typeof MeetingOnboardFormSchema>>({
     resolver: zodResolver(MeetingOnboardFormSchema),
     defaultValues: {
       name: '',
       role: '',
       email: '',
-      day: Day.Monday,
+      day: 'monday',
       time: '',
-      frequency: Frequency.Weekly,
+      frequency: 'weekly',
     },
   });
+
   const { meetings, setMeetings } = useSetupFormContext();
 
   const handleSubmit = async () => {
-    await handleMeetingOnboardFormSubmit(meetings);
+    await submitMeetingOnboardAction(meetings);
   };
 
-  const handleAddMeeting = () => {
-    setMeetings((prev) => [])
+  // pushes the meeting to the context
+  const handleAddMeeting = (data: any) => {
+    console.log(data)
+    setMeetings((prev) => [...prev, data])
+    form.reset()
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleAddMeeting)} className="space-y-4">
         <div className="flex space-x-4">
           <FormItem className="w-7/12">
             <FormLabel className="text-text-primary">Name</FormLabel>
@@ -128,7 +108,7 @@ export const MeetingOnboardForm = () => {
             <Controller
               name="time"
               control={form.control}
-              render={({ field }) => <Input placeholder="Enter time" {...field} value={field.value ?? ''} />}
+              render={({ field }) => <Input placeholder="Enter time" type="time" {...field} value={field.value ?? ''} />}
             />
           </FormControl>
           <FormDescription>Meeting time</FormDescription>
@@ -148,11 +128,13 @@ export const MeetingOnboardForm = () => {
           <FormMessage />
         </FormItem>
 
-        <Button type="button" onClick={handleAddMeeting} variant="outline" className="w-full text-branding-bright border-background-border bg-background-primary">
-          Add Meeting
-        </Button>
+
+        {/*NOTE: adds are submits but the actual submit is handled by onclick to reduce rerenders*/}
         <Button type="submit" variant="outline" className="w-full text-branding-bright border-background-border bg-background-primary mt-4">
-          Submit
+          add
+        </Button>
+        <Button type="button" onClick={handleSubmit} variant="outline" className="w-full text-branding-bright border-background-border bg-background-primary">
+          submit
         </Button>
       </form>
     </Form>

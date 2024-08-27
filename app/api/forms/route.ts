@@ -1,64 +1,82 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
-import { TablesInsert, Tables } from '@/lib/database.types';
-
-interface RequestBody {
-  userForm: TablesInsert<'users'>;
-  meetingForms: TablesInsert<'meetings'>[];
-}
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation';
 
 export async function POST(request: Request) {
-  const { userForm, meetingForms }: RequestBody = await request.json();
+  const { formType, formData }: {
+    formType: string; formData: {
+      name: string,
+      role: string,
+      prompt: string
+    }
+  } = await request.json();
 
   try {
-    console.log('Received userForm:', userForm);
-    console.log('Received meetingForms:', meetingForms);
+    switch (formType) {
+      case 'userForm':
+        const supabase = createClient()
+        const { data, error } = await supabase.auth.getUser()
 
-    // Validate prompt field (example: ensure it's not too long)
-    if ((userForm.prompt ?? '').length > 255) {
-      throw new Error('Prompt is too long');
+        if (error || !data?.user) {
+          console.log("USER NOT AUTH'D");
+          //redirect('')
+          //RETURN ERROR HERE
+        }
+
+        else {
+        }
+
+        const submissionData = {
+          ...formData,
+          ...data
+        }
+
+        const userProfile = {
+          ...data,
+
+        }
+        
+
+      return new Response('')
+
+
+
+      ///////////////////
+      case 'meetingForm':
+      default:
+
+        throw new Error('Invalid form type');
     }
-
-    // Save user data
-    const { data: user, error: userError } = await supabase
-      .from('users')
-      .insert([userForm])
-      .select('id') // Ensure we select the id field
-      .single();
-
-    if (userError) {
-      console.error('Error creating user:', userError);
-      throw userError;
-    }
-
-    if (!user || !user.id) {
-      throw new Error('User creation failed or user ID is missing');
-    }
-
-    console.log('User created:', user);
-
-    // Save meeting data
-    const meetingPromises = meetingForms.map((meetingForm) =>
-      supabase
-        .from('meetings')
-        .insert([{ ...meetingForm, user_id: user.id }])
-    );
-
-    const meetings = await Promise.all(meetingPromises);
-
-    console.log('Meetings created:', meetings);
-
-    // Replace email sending with console.log
-    console.log('Welcome!');
-    console.log(`Email would be sent to: ${userForm.email}`);
-
-    return NextResponse.json({ user, meetings }, { status: 201 });
   } catch (error) {
-    console.error('Error saving data:', error);
-    return NextResponse.json({ error: 'Failed to save data' }, { status: 500 });
+    console.error('Error processing request:', error);
+    return NextResponse.json({ error: 'Failed to process request' }, { status: 500 });
   }
 }
 
 export async function GET(request: Request) {
   return NextResponse.json({ message: 'GET request handled' });
 }
+
+/*
+user: {
+    id: 'e4d3bf81-de07-4635-9c3a-caf1d2392901',
+    aud: 'authenticated',
+    role: 'authenticated',
+    email: 'sshar1q@icloud.com',
+    email_confirmed_at: '2024-08-14T04:06:00.334962Z',
+    phone: '',
+    confirmed_at: '2024-08-14T04:06:00.334962Z',
+    last_sign_in_at: '2024-08-21T19:37:36.330419Z',
+    app_metadata: { provider: 'email', providers: [Array] },
+    user_metadata: {
+      email: 'sshar1q@icloud.com',
+      email_verified: false,
+      phone_verified: false,
+      sub: 'e4d3bf81-de07-4635-9c3a-caf1d2392901'
+    },
+    identities: [ [Object] ],
+    created_at: '2024-08-14T04:06:00.316928Z',
+    updated_at: '2024-08-21T19:37:36.340184Z',
+    is_anonymous: false
+  }
+*/

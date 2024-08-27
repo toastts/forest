@@ -2,19 +2,18 @@
 
 import { Dispatch, SetStateAction, } from "react";
 import { createContext, useContext, useState } from "react";
-import { MeetingOnboardFormValues } from "@/components/fds/forms/MeetingOnboardForm";
+import { MeetingOnboardFormValues } from "@/components/forms/MeetingOnboardForm";
 
 interface SetupFormType {
   meetings: MeetingOnboardFormValues[];
   setMeetings: Dispatch<SetStateAction<MeetingOnboardFormValues[]>>;
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
-
 }
+
 interface Props {
   children: React.ReactNode;
 }
-
 const FormContext = createContext<SetupFormType | null>(null);
 
 
@@ -24,7 +23,6 @@ export const SetupFormProvider = ({ children }: Props) => {
   const [meetings, setMeetings] = useState<MeetingOnboardFormValues[]>([]);
   const [currentStep, setCurrentStep] = useState(1);
 
-
   const values = {
     meetings,
     setMeetings,
@@ -32,7 +30,10 @@ export const SetupFormProvider = ({ children }: Props) => {
     setCurrentStep,
   };
 
-  return <FormContext.Provider value={values}>{children}</FormContext.Provider>;
+  return (<FormContext.Provider value={values}>
+    {children}
+  </FormContext.Provider>
+  );
 };
 
 export const useSetupFormContext = () => {

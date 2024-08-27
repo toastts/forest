@@ -1,9 +1,11 @@
+'use client';
+
 import * as React from 'react';
-import { MeetingOnboardForm, MeetingOnboardFormValues } from '@/components/fds/forms/MeetingOnboardForm';
-import { UserOnboardForm } from '@/components/fds/forms/UserOnboardForm';
+import { MeetingOnboardForm, MeetingOnboardFormValues } from '@/components/forms/MeetingOnboardForm';
+import { UserOnboardForm } from '@/components/forms/UserOnboardForm';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
-import { useSetupFormContext } from '@/components/fds/forms/SetupFormContext';
+import { useSetupFormContext } from '@/components/forms/SetupFormContext';
 
 export const MultipartForm = () => {
   let { currentStep, meetings } = useSetupFormContext();
