@@ -17,6 +17,7 @@ import { submitMeetingOnboardAction } from '@/app/setup/actions';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { MeetingOnboardFormSchema, Day, Frequency } from './FormSchemas';
+import { redirect } from 'next/navigation';
 
 
 export const MeetingOnboardForm = () => {
@@ -35,7 +36,9 @@ export const MeetingOnboardForm = () => {
   const { meetings, setMeetings } = useSetupFormContext();
 
   const handleSubmit = async () => {
-    await submitMeetingOnboardAction(meetings);
+    const res = await submitMeetingOnboardAction(meetings);
+    if (res){ 
+    }
   };
 
   // pushes the meeting to the context

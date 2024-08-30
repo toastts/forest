@@ -66,6 +66,5 @@ export async function submitMeetingOnboardAction(formData: {
     console.error(res.error);
     return false;
   }
-
-  return true;
+  redirect('/_')
 }
